@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor hca
+@model YodaCodingForumBack.Models.SearchClass
+@{
+    ViewData["Title"] = "文章搜尋";
+}
+<div class="content-wrapper">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">文章清單</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>文章標題</th>
+                                        <th>文章狀態</th>
+                                        <th>瀏覽數</th>
+                                        <th>按讚數</th>
+                                        <th>發文者</th>
+                                        <th>發文時間</th>
+                                        <th>最後修改時間</th>
+                                        <th>版次</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @*排序*@
+                                    @{int i = 0;}
+                                    @foreach (var article in Model.articleList)
+                                    {
+                                        <tr>
+                                            <td>@{i += 1;}@i</td>
+                                            <td>@article.ArticleTitle</td>
+                                            <td>@article.ArticleStatus</td>
+                                            <td>@article.ArticleViews</td>
+                                            <td>@article.ArticleLike</td>
+                                            <td>@article.CreateUser</td>
+                                            <td>@article.CreateDate</td>
+                                            <td>@article.LastupdateDate</td>
+                                            <td>@article.Version</td>
+                                            <td>
+                                                <a class="btn btn-info btn-sm" href="@Url.Action("ArticleDetails", "Article")">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+
+    </section>
+</div>
+
+
+
+
+
+
+
+
+
+

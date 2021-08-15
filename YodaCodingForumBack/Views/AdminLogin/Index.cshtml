@@ -1,0 +1,67 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Yoda Codeing - 管理員登入</title>
+    <link href="~/css/Login.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/bootstrap/bootstrap.min.css">
+</head>
+
+<body>
+
+    <div class="masthead">
+        <div class="masthead-content text-white">
+            <div class="container-fluid px-4 px-lg-0">
+                <h1 class="fst-italic lh-1 mb-4">Coding YodaCodingForumBack</h1>
+                <h1 class="fst-italic lh-1 mb-4" id="secondLine">後台管理中心</h1>
+                <p class="mb-5">管理員登入</p>
+                <div id="inputerror" style="display:none;background-color:palevioletred;color:white;text-align:center;margin-bottom:5px;">帳號密碼輸入錯誤。</div>
+                <div class="row input-group-newsletter">
+                    <div class="col"><input class="form-control" id="account" placeholder="帳號" /></div>
+                </div>
+                <div class="row input-group-newsletter">
+                    <div class="col"><input type="password" class="form-control" id="password" placeholder="密碼" /></div>
+                </div>
+                <div class="col-auto"><button class="btn btn-primary" id="adminLoginBtn">登入</button></div>
+            </div>
+        </div>
+    </div>
+    <script src="~/js/login.js"></script>
+    <script src="~/js/bootstrap/bootstrap.min.js"></script>
+    <script src="~/js/jquery/jquery-3.6.0.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#adminLoginBtn").on("click", function () {
+                $.post("/adminlogin/checkAccount",
+                    { account: $("#account").val(), password: $("#password").val() },
+                    function (response) {
+                        if (response == "Success") {
+                            document.location.href = "/home/index";
+                        }
+                        else {
+                            $("#account").addClass("is-invalid");
+                            $("#password").addClass("is-invalid");
+                            $("#inputerror").show("fast");
+                        }
+                    });
+            });
+            $("#account").focus(function () {
+                $("#account").removeClass("is-invalid");
+                $("#password").removeClass("is-invalid");
+                $("#inputerror").hide("slow");
+            })
+
+
+        });
+    </script>
+</body>
+
+</html>
+
+
+

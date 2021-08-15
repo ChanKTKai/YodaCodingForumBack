@@ -1,0 +1,488 @@
+﻿@model YodaCodingForumBack.Models.SearchClass;
+@{
+    ViewData["Title"] = "文章管理";
+
+}
+<script src="~/examples/js/jquery.min.js"></script>
+<script src="~/lib/marked.min.js"></script>
+<script src="~/editormd.js"></script>
+<script type="text/javascript">
+
+    $(function () {
+        var showArticle, testEditormd;
+        showArticle = editormd.markdownToHTML("showArticleBox", {
+            htmlDecode: "style,script,iframe",
+            emoji: true,
+            taskList: true,
+            tex: true,
+            flowChart: true,
+            sequenceDiagram: true,
+        });
+    });
+</script>
+<script type="text/javascript">
+@foreach (var Comment in Model.articleDetail.ArticleCommentList)
+    { <text>
+                $(function () {
+                    var articleComment;
+                    articleComment = editormd.markdownToHTML("-@Comment.CommentId-showComment", {
+                        htmlDecode: "style,script,iframe",
+                        emoji: true,
+                        taskList: true,
+                        tex: true,
+                        flowChart: true,
+                        sequenceDiagram: true
+                    });
+                });
+     </text>
+    }
+</script>
+<div class="content-wrapper">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card primary card-outline mt-3">
+                <div class="card-body">
+                    <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">問答資訊</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">問答回覆 @Model.articleDetail.ArticleResponseCount</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="custom-content-above-profile2-tab" data-toggle="pill" href="#custom-content-above-profile2" role="tab" aria-controls="custom-content-above-profile2" aria-selected="false">回答 @Model.articleDetail.ArticleCommentCount</a>
+                        </li>
+
+                    </ul>
+                    <div class="tab-custom-content">
+                        <h5 class="text-muted  pb-2"><strong>問答標題：</strong></h5>
+                        <p class="lead mb-0">@Model.articleDetail.ArticleTitle</p>
+                    </div>
+                    <div class="tab-content" id="custom-content-above-tabContent">
+                        @*文章*@
+                        <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                            @*關閉開啟文章*@
+                            <div class="form-group">
+                                <h5 class="text-muted  pb-2"><strong>問答狀態：</strong></h5>
+                                <div>
+                                    @*狀態正常*@
+                                    @if (Model.articleDetail.ArticleStatus == "A")
+                                    {
+                                        <div class="btn-group">
+                                            <button type="button" id="AskBtn" class="btn btn-md btn-primary active" value="ON">發問</button>
+                                            <button type="button" id="FinishBtn" class="btn btn-md btn-default" value="OFF">解決</button>
+                                            <button type="button" id="DeleteBtn" class="btn btn-md btn-default" value="OFF">刪除</button>
+                                        </div>
+                                    }
+                                    @*狀態已解決*@
+                                    else if (Model.articleDetail.ArticleStatus == "F")
+                                    {
+                                        <div class="btn-group">
+                                            <button type="button" id="AskBtn" class="btn btn-md btn-default" value="OFF">發問</button>
+                                            <button type="button" id="FinishBtn" class="btn btn-md btn-success active" value="ON">解決</button>
+                                            <button type="button" id="DeleteBtn" class="btn btn-md btn-default" value="OFF">刪除</button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="btn-group">
+                                            <button type="button" id="AskBtn" class="btn btn-md btn-default" value="OFF">發問</button>
+                                            <button type="button" id="FinishBtn" class="btn btn-md btn-default" value="OFF">解決</button>
+                                            <button type="button" id="DeleteBtn" class="btn btn-md btn-danger active" value="ON">刪除</button>
+                                        </div>
+                                    }
+
+                                    <input id="showCloseModal" data-toggle="modal" data-target="#articleModal" value="Show" type="hidden" />
+
+                                    <div class="modal fade" id="articleModal">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title" id="fadeTitle"></h4>
+                                                </div>
+                                                <form method="post" action="/Article/changeStatus">
+                                                    <div class="modal-body">
+                                                        <p style="text-align:center;" id="modalLable"></p>
+                                                        <input type="hidden" name="TargetID" value="@Model.articleDetail.ArticleId" />
+                                                        <input type="hidden" id="articleStatus" name="status" value="" />
+                                                        <input type="hidden" name="ArticleType" value="Q" />
+                                                        <input type="hidden" name="TargetType" value="A" />
+                                                        <input type="hidden" name="ArticleID" value="@Model.articleDetail.ArticleId" />
+                                                    </div>
+                                                    <div class="modal-footer justify-content-between">
+                                                        <input type="submit" class="btn btn-primary" value="確定">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                &emsp;
+                                <div class="post">
+                                    <div class="user-block">
+                                        <img class="img-circle img-bordered-sm" src="@String.Format("data:image/png;base64,{0}",Convert.ToBase64String(Model.articleDetail.ArticleImage))" alt="user image">
+                                        <span class="username">
+                                            <a href="/UserInfo/UserList?uid=@Model.articleDetail.ArticleUserID">@Model.articleDetail.CreateUser</a>
+                                        </span>
+                                        <span class="description">@Model.articleDetail.LastupdateDate</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <h5 class="text-muted  pb-2"><strong>問答內容：</strong></h5>
+                            <div id="showArticleBox">
+                                <textarea>@Model.articleDetail.ArticleContent</textarea>
+                            </div>
+                        </div>
+
+                        @*回覆*@
+                        <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab">
+                            <h5 class="text-muted  pb-2"><strong>回覆：</strong></h5>
+                            <div class="row">
+                                <div class="col-12">
+                                    @foreach (var Response in Model.articleDetail.ArticleResponseList)
+                                    {
+
+                                        <div class="post">
+                                            <div class="user-block">
+                                                <img class="img-circle img-bordered-sm" src="@String.Format("data:image/png;base64,{0}",Convert.ToBase64String(Response.ResponseImage))" alt="user image">
+                                                <span class="username">
+                                                    <a href="/UserInfo/UserList?uid=@Response.ResponseUserID">@Response.ResponseAccount</a>
+                                                </span>
+                                                <span class="description">@Response.CreateDate</span>
+                                            </div>
+                                            <p>
+                                                @Response.ResponseContent
+                                            </p>
+                                            <div>
+                                                @*狀態正常*@
+                                                @if (Response.ResponseStatus == "N")
+                                                {
+                                                    <div class="btn-group" id="Response_toggle_@Response.ResponseID">
+                                                        <button type="button" class="btn btn-md btn-primary active" value="ON">ON</button>
+                                                        <button type="button" class="btn btn-md btn-default" value="OFF">OFF</button>
+                                                    </div>
+                                                }
+                                                @*狀態關閉*@
+                                                else
+                                                {
+                                                    <div class="btn-group" id="Response_toggle_@Response.ResponseID">
+                                                        <button type="button" class="btn btn-md btn-default" value="ON">ON</button>
+                                                        <button type="button" class="btn btn-md btn-danger active" value="OFF">OFF</button>
+                                                    </div>
+                                                }
+
+                                                <input id="showAR_@Response.ResponseID" data-toggle="modal" data-target="#arModel_@Response.ResponseID" value="Show" type="hidden" />
+
+                                                <div class="modal fade" id="arModel_@Response.ResponseID">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title" id="arfadeTitle_@Response.ResponseID"></h4>
+                                                            </div>
+                                                            <form method="post" action="/Article/changeStatus">
+                                                                <div class="modal-body">
+                                                                    <p style="text-align:center;" id="ar_modalLable_@Response.ResponseID"></p>
+                                                                    <input type="hidden" name="TargetID" value="@Response.ResponseID" />
+                                                                    <input type="hidden" id="arStatus_@Response.ResponseID" name="status" value="" />
+                                                                    <input type="hidden" name="TargetType" value="AR" />
+                                                                    <input type="hidden" name="ArticleType" value="Q" />
+                                                                    <input type="hidden" name="ArticleID" value="@Model.articleDetail.ArticleId" />
+                                                                </div>
+                                                                <div class="modal-footer justify-content-between">
+                                                                    <input type="submit" class="btn btn-primary" value="確定">
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        @*留言*@
+                        <div class="tab-pane fade" id="custom-content-above-profile2" role="tabpanel" aria-labelledby="custom-content-above-profile2-tab">
+                            <h5 class="text-muted  pb-2"><strong>回答：</strong></h5>
+                            <div class="row">
+                                <div class="col-12">
+                                    @foreach (var Comment in Model.articleDetail.ArticleCommentList)
+                                    {
+                                        <div class="post">
+                                            @if (Comment.CommentAnswer == "Y")
+                                            {
+
+
+                                                <span style="padding:5px;font-size:20px;background-color: #f6a453; color: white; border-radius: 5px;">
+                                                    <i class="fa fa-star" aria-hidden="true"></i> 最佳回答
+                                                </span>
+
+                                                <div class="user-block pt-4">
+                                                    <img class="img-circle img-bordered-sm" src="@String.Format("data:image/png;base64,{0}",Convert.ToBase64String(Comment.CommentImage))" alt="user image">
+                                                    <span class="username">
+                                                        <a href="/UserInfo/UserList?uid=@Comment.CommentUserID">@Comment.CommentAccount</a>
+                                                    </span>
+                                                    <span class="description">@Comment.LastUpdateDate</span>
+                                                </div>
+
+                                            }
+                                            else
+                                            {
+                                                <div class="user-block">
+                                                    <img class="img-circle img-bordered-sm" src="@String.Format("data:image/png;base64,{0}",Convert.ToBase64String(Comment.CommentImage))" alt="user image">
+                                                    <span class="username">
+                                                        <a href="/UserInfo/UserList?uid=@Comment.CommentUserID">@Comment.CommentAccount</a>
+                                                    </span>
+                                                    <span class="description">@Comment.LastUpdateDate</span>
+                                                </div>
+                                            }
+                                           
+                                            <!-- /.user-block -->
+                                            <div id="-@Comment.CommentId-showComment">
+                                                <textarea>@Comment.CommentContent</textarea>
+                                            </div>
+                                            <div>
+                                                @*狀態正常*@
+                                                @if (Comment.CommentStatus == "N")
+                                                {
+                                                    <div class="btn-group" id="Comment_toggle_@Comment.CommentId">
+                                                        <button type="button" class="btn btn-md btn-primary active" value="ON">ON</button>
+                                                        <button type="button" class="btn btn-md btn-default" value="OFF">OFF</button>
+                                                    </div>
+                                                }
+                                                @*狀態關閉*@
+                                                else
+                                                {
+                                                    <div class="btn-group" id="Comment_toggle_@Comment.CommentId">
+                                                        <button type="button" class="btn btn-md btn-default" value="ON">ON</button>
+                                                        <button type="button" class="btn btn-md btn-danger active" value="OFF">OFF</button>
+                                                    </div>
+                                                }
+
+                                                <input id="showC_@Comment.CommentId" data-toggle="modal" data-target="#cModel_@Comment.CommentId" value="Show" type="hidden" />
+
+                                                <div class="modal fade" id="cModel_@Comment.CommentId">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title" id="cfadeTitle_@Comment.CommentId"></h4>
+                                                            </div>
+                                                            <form method="post" action="/Article/changeStatus">
+                                                                <div class="modal-body">
+                                                                    <p style="text-align:center;" id="c_modalLable_@Comment.CommentId"></p>
+                                                                    <input type="hidden" name="TargetID" value="@Comment.CommentId" />
+                                                                    <input type="hidden" id="cStatus_@Comment.CommentId" name="status" value="" />
+                                                                    <input type="hidden" name="TargetType" value="C" />
+                                                                    <input type="hidden" name="ArticleType" value="Q" />
+                                                                    <input type="hidden" name="ArticleID" value="@Model.articleDetail.ArticleId" />
+                                                                </div>
+                                                                <div class="modal-footer justify-content-between">
+                                                                    <input type="submit" class="btn btn-primary" value="確定">
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @*留言的回覆*@
+                                            <h6 class="text-muted  pb-2" style="margin-left:50px;margin-top:20px"><strong>留言回覆：</strong></h6>
+                                            @foreach (var Response in Comment.CommentResponseList)
+                                            {
+
+                                                <div class="post" style="margin-left:50px;">
+                                                    <div class="user-block">
+                                                        <img class="img-circle img-bordered-sm" src="@String.Format("data:image/png;base64,{0}",Convert.ToBase64String(Response.ResponseImage))" alt="user image">
+                                                        <span class="username">
+                                                            <a href="/UserInfo/UserList?uid=@Response.ResponseUserID">@Response.ResponseAccount</a>
+                                                        </span>
+                                                        <span class="description">@Response.CreateDate</span>
+                                                    </div>
+                                                    <!-- /.user-block -->
+                                                    <p>@Response.ResponseContent</p>
+                                                    <div>
+                                                        @*狀態正常*@
+                                                        @if (Response.ResponseStatus == "N")
+                                                        {
+                                                            <div class="btn-group" id="CResponse_toggle_@Response.ResponseID">
+                                                                <button type="button" class="btn btn-md btn-primary active" value="ON">ON</button>
+                                                                <button type="button" class="btn btn-md btn-default" value="OFF">OFF</button>
+                                                            </div>
+                                                        }
+                                                        @*狀態關閉*@
+                                                        else
+                                                        {
+                                                            <div class="btn-group" id="CResponse_toggle_@Response.ResponseID">
+                                                                <button type="button" class="btn btn-md btn-default" value="ON">ON</button>
+                                                                <button type="button" class="btn btn-md btn-danger active" value="OFF">OFF</button>
+                                                            </div>
+                                                        }
+
+                                                        <input id="showCR_@Response.ResponseID" data-toggle="modal" data-target="#crModel_@Response.ResponseID" value="Show" type="hidden" />
+
+                                                        <div class="modal fade" id="crModel_@Response.ResponseID">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title" id="crfadeTitle_@Response.ResponseID"></h4>
+                                                                    </div>
+                                                                    <form method="post" action="/Article/changeStatus">
+                                                                        <div class="modal-body">
+                                                                            <p style="text-align:center;" id="cr_modalLable_@Response.ResponseID"></p>
+                                                                            <input type="hidden" name="TargetID" value="@Response.ResponseID" />
+                                                                            <input type="hidden" id="crStatus_@Response.ResponseID" name="status" value="" />
+                                                                            <input type="hidden" name="TargetType" value="CR" />
+                                                                            <input type="hidden" name="ArticleType" value="Q" />
+                                                                            <input type="hidden" name="ArticleID" value="@Model.articleDetail.ArticleId" />
+                                                                        </div>
+                                                                        <div class="modal-footer justify-content-between">
+                                                                            <input type="submit" class="btn btn-primary" value="確定">
+                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div>&emsp;</div>
+                    <div class="previous"><a href="/qa/index">← 上一頁</a></div>
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+</div>
+
+<script src="~/examples/js/jquery.min.js"></script>
+<script src="~/lib/marked.min.js"></script>
+<script src="~/lib/prettify.min.js"></script>
+<script src="~/editormd.js"></script>
+@*<script src="~/js/main.js"></script>*@
+
+<script type="text/javascript">
+
+    //問答狀態按鈕
+    //發問按鈕
+    $('#AskBtn').click(function () {
+        if ($('#AskBtn').val()=="OFF") {
+            $("#fadeTitle").text("確定設定為發問狀態？");
+            document.getElementById('modalLable').innerText = "問題將會顯示發問中";
+            $("#articleStatus").val("A");
+            $("#showCloseModal").click();
+        }
+        else {
+            return;
+        }
+    });
+    //已解決按鈕
+    $('#FinishBtn').click(function () {
+        if ($('#FinishBtn').val() == "OFF") {
+            $("#fadeTitle").text("確定設定為解決狀態？");
+            document.getElementById('modalLable').innerText = "問題將會顯示已解決";
+            $("#articleStatus").val("F");
+            $("#showCloseModal").click();
+        }
+        else {
+            return;
+        }
+    });
+    //刪除按鈕
+    $('#DeleteBtn').click(function () {
+        if ($('#DeleteBtn').val() == "OFF") {
+            $("#fadeTitle").text("確定要關閉問答？");
+            document.getElementById('modalLable').innerText = "問答將會隱藏起來";
+            $("#articleStatus").val("D");
+            $("#showCloseModal").click();
+        }
+        else {
+            return;
+        }
+    });
+
+    //文章回覆
+    @foreach (var Response in Model.articleDetail.ArticleResponseList)
+    {
+        <text>
+    $('#Response_toggle_@Response.ResponseID').click(function () {
+
+        //若目前狀態為正常
+        if ($(this).find('.active').val() == 'ON') {
+            $("#arfadeTitle_@Response.ResponseID").text("確定要關閉此問答回覆？");
+            document.getElementById('ar_modalLable_@Response.ResponseID').innerText = "問答回覆將會隱藏起來";
+            $("#arStatus_@Response.ResponseID").val("D");
+            $("#showAR_@Response.ResponseID").click();
+
+        }
+        else {
+            $("#arfadeTitle_@Response.ResponseID").text("確定要開啟此問答回覆？");
+            document.getElementById('ar_modalLable_@Response.ResponseID').innerText = "問答回覆將會顯示起來";
+            $("#arStatus_@Response.ResponseID").val("N");
+            $("#showAR_@Response.ResponseID").click();
+        }
+
+    });
+        </text>
+    }
+    //留言
+    @foreach (var Comment in Model.articleDetail.ArticleCommentList)
+    {
+        <text>
+    $('#Comment_toggle_@Comment.CommentId').click(function () {
+
+        //若目前狀態為正常
+        if ($(this).find('.active').val() == 'ON') {
+            $("#cfadeTitle_@Comment.CommentId").text("確定要關閉回答？");
+            document.getElementById('c_modalLable_@Comment.CommentId').innerText = "回答(含其回覆)將會隱藏起來";
+            $("#cStatus_@Comment.CommentId").val("D");
+            $("#showC_@Comment.CommentId").click();
+
+        }
+        else {
+            $("#cfadeTitle_@Comment.CommentId").text("確定要開啟回答？");
+            document.getElementById('c_modalLable_@Comment.CommentId').innerText = "回答(含其回覆)將會顯示起來";
+            $("#cStatus_@Comment.CommentId").val("N");
+            $("#showC_@Comment.CommentId").click();
+        }
+
+    });
+            //留言回覆
+            @foreach (var Response in Comment.CommentResponseList)
+            {
+                <text>
+            $('#CResponse_toggle_@Response.ResponseID').click(function () {
+
+                //若目前狀態為正常
+                if ($(this).find('.active').val() == 'ON') {
+                    $("#crfadeTitle_@Response.ResponseID").text("確定要關閉此回覆？");
+                    document.getElementById('cr_modalLable_@Response.ResponseID').innerText = "回覆將會隱藏起來";
+                    $("#crStatus_@Response.ResponseID").val("D");
+                    $("#showCR_@Response.ResponseID").click();
+
+                }
+                else {
+                    $("#crfadeTitle_@Response.ResponseID").text("確定要開啟此回覆？");
+                    document.getElementById('cr_modalLable_@Response.ResponseID').innerText = "回覆將會顯示起來";
+                    $("#crStatus_@Response.ResponseID").val("N");
+                    $("#showCR_@Response.ResponseID").click();
+                }
+
+            });
+                </text>
+            }
+        </text>
+    }
+</script>

@@ -1,0 +1,237 @@
+﻿@model YodaCodingForumBack.Models.SearchClass
+@{
+    ViewData["Title"] = "相似Tag維護";
+
+
+}
+
+<div class="content-wrapper">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="mt-3">
+                <!--主Tag-->
+                <div class="col-md-12 m-auto mt-3">
+                    <div class="card-header bg-info">
+                        <h3 class="card-title">主要Tag</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Tag 名稱</th>
+                                    <th>建立者</th>
+                                    <th>建立時間</th>
+                                    <th>最後異動者</th>
+                                    <th>最後異動時間</th>
+                                    <th>版次</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    @foreach (var tag in Model.tagDetailList)
+                                    {
+                                        <td></td>
+                                        <td>
+                                            @tag.TagName
+                                        </td>
+                                        <td>@tag.CreateUser</td>
+                                        <td>@tag.CreateDate</td>
+                                        <td>@tag.LastupdateUser</td>
+                                        <td>@tag.LastupdateDate</td>
+                                        <td>@tag.Version</td>
+                                        <td class="project-actions">
+                                            <button class="btn btn-info btn-sm " data-toggle="modal" data-target="#tagNameEdit">
+                                                <i class="fas fa-pencil-alt"></i>
+
+                                                修改
+                                            </button>
+
+                                            <div class="modal fade" id="tagNameEdit">
+                                                <div class="modal-dialog Tag-Modify">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">修改相似Tag</h4>
+                                                        </div>
+                                                        <form action="/tag/editTagName" method="post">
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <label for="inputEditTagAlso">相似Tag名稱</label>
+                                                                    <input type="text" value="@tag.TagName" name="newTagName" id="inputEditTagAlso" class="form-control" required>
+                                                                    <input type="text" value="@tag.TagID" name="TagID" style="display:none;">
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer justify-content-between">
+                                                                <button type="submit" class="btn btn-primary">更新</button>
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    }
+                                </tr>
+
+                                <tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <div class="mt-3">
+
+
+                    <!--相似Tag清單-->
+                    <div class="col-md-12 m-auto card-secondary">
+                        <div class="card-header">
+                            <h3 class="card-title">相似Tag</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            @foreach (var tag in Model.tagDetailList)
+                            {
+                                <table class="table table-hover text-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>相似名稱</th>
+                                            <th>建立者</th>
+                                            <th>建立時間</th>
+                                            <th>最後異動者</th>
+                                            <th>最後異動時間</th>
+                                            <th>版次</th>
+                                            <th class="col-3">
+                                                <button type="button" class="btn btn-primary btn-sm float-right " data-toggle="modal" data-target="#Tagalso-Add">
+                                                    <i class="fas fa-folder"></i>
+                                                    新增
+                                                </button>
+                                                <div class="modal fade" id="Tagalso-Add">
+                                                    <div class="modal-dialog Tagalso-Add">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title">新增相似Tag</h4>
+                                                            </div>
+                                                            <form action="/tag/oldTagAddNewTagAlso" method="post">
+                                                                <div class="modal-body">
+                                                                    <div class="form-group">
+                                                                        <label for="inputNewTagAlso">相似Tag 名稱</label>
+                                                                        <input type="text" id="inputNewTagAlso" name="oldTagAddNewTagAlso" class="form-control" required>
+                                                                        <input type="text" value="@tag.TagID" name="TagID" class="form-control" style="display:none;" required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer justify-content-between">
+                                                                    <button type="submit" class="btn btn-primary">新增</button>
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @*排序*@
+                                        @{int i = 0;}
+                                        @foreach (var tagAlso in tag.TagAlsoList)
+                                        {
+                                            <tr>
+                                                <td>@{i++;}@i</td>
+                                                <td>@tagAlso.TagalsoName</td>
+                                                <td>@tagAlso.CreateUser</td>
+                                                <td>@tagAlso.CreateDate</td>
+                                                <td>@tagAlso.LastupdateUser</td>
+                                                <td>@tagAlso.LastupdateDate</td>
+                                                <td>@tagAlso.Version</td>
+                                                <td class="project-actions">
+                                                    <button class="btn btn-info btn-sm " data-toggle="modal" data-target="#tag_@tagAlso.TagalsoId">
+                                                        <i class="fas fa-pencil-alt"></i>
+
+                                                        修改
+                                                    </button>
+
+
+                                                    <button class="btn btn-danger btn-sm " data-toggle="modal" data-target="#tagDelete_@tagAlso.TagalsoId">
+
+                                                        <i class="fas fa-trash"></i>
+                                                        刪除
+                                                    </button>
+
+                                                    <div class="modal fade" id="tagDelete_@tagAlso.TagalsoId">
+                                                        <div class="modal-dialog Tag-Modify">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title">確定要刪除？</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    @tagAlso.TagalsoName
+                                                                </div>
+                                                                <div class="modal-footer justify-content-between">
+                                                                    <a href="/tag/tagAlsoDelete?taid=@tagAlso.TagalsoId">
+                                                                        <button type="submit" class="btn btn-danger">確定</button>
+                                                                    </a>
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="modal fade" id="tag_@tagAlso.TagalsoId">
+                                                        <div class="modal-dialog Tag-Modify">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title">修改相似Tag</h4>
+                                                                </div>
+                                                                <form action="/tag/oldTagAddEditTagAlso" method="post">
+
+                                                                    <div class="modal-body">
+                                                                        <div class="form-group">
+                                                                            <label for="inputEditTagAlso">相似Tag名稱</label>
+                                                                            <input type="text" value="@tagAlso.TagalsoName" name="oldTagAddEditTagAlso" id="inputEditTagAlso" class="form-control" required>
+                                                                            <input type="text" value="@tagAlso.TagId" name="oldTagID" style="display:none;">
+                                                                            <input type="text" value="@tagAlso.TagalsoId" name="oldTagAlsoID" style="display:none;">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer justify-content-between">
+                                                                        <button type="submit" class="btn btn-primary">更新</button>
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                <!--新增相似Tag-->
+                <div class="col-md-12 m-auto">
+                    <div class="previous"><a href="/tag/index">&larr; 返回Tag清單</a></div>
+                </div>
+            </div>
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+</div>
+

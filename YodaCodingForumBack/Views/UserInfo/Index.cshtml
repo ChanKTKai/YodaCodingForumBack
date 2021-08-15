@@ -1,0 +1,184 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor hca
+@model YodaCodingForumBack.Models.SearchClass
+@{
+    ViewData["Title"] = "會員管理";
+}
+
+<style>
+
+    .pagination {
+        margin: 0;
+    }
+
+        .pagination li:hover {
+            cursor: pointer;
+        }
+</style>
+
+
+<div class="content-wrapper">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card card-info  mt-3">
+                <div class="card-header">
+                    <h3 class="card-title">會員清單</h3>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <table class="table" id="userList">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>帳號</th>
+                            <th>姓名</th>
+                            <th>狀態</th>
+                            <th>性別</th>
+                            <th>信箱</th>
+                            <th>累計點數</th>
+                            <th>加入時間</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @*排序*@
+                        @{int i = 0;}
+                        @foreach (var user in Model.userList)
+                        {
+                            <tr>
+                                <td>@{i += 1;}@i</td>
+
+                                <td>
+                                    <a href="@Url.Action("UserList","UserInfo",new { uid = user.uid })" class="btn btn-info btn-sm">
+                                    <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+
+                                <th>@user.account</th>
+                                <th>@user.name</th>
+
+                                @if (user.status == "關閉")
+                                {
+                                    <th class="error text-danger">@user.status</th>
+                                }
+                                else if (user.status == "正常")
+                                {
+                                    <th class="error text-green">@user.status</th>
+                                }
+                                else
+                                {
+                                    <th class="error text-gray">@user.status</th>
+                                }
+                                <td>@user.sex</td>
+                                <td>@user.email</td>
+                                <td>@user.point</td>
+                                <td>@user.creatdate</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            @*頁碼*@
+            <!--<div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0">-->
+            <!--	Here the JS Function Will Add the Rows -->
+            <!--</ul>
+            </div>-->
+
+
+        </div>
+    </section>
+</div>
+
+<script src="~/adminlte/plugins/jquery/jquery.js"></script>
+@*<script type="text/javascript">
+
+        $(function () {
+
+            //將要執行頁碼的TableID放入呼叫func
+            getPagination('#userList');
+
+            //判斷Table列數產生頁碼
+            function getPagination(table) {
+
+                //將class:pagination內的html初始
+                $('.pagination').html('');
+                //一頁最多顯示的列數
+                var maxRows = 2;
+                //所有資料列數
+                var totalRows = $(table + ' tbody tr').length;
+
+                //資料列數變數初始
+                var trnum = 0;
+                //Table跑每一列資料<tr>
+                $(table + ' tr:gt(0)').each(function () {
+
+                    trnum++;
+
+                    //如果超過設定的顯示列數
+                    if (trnum > maxRows) {
+
+                        $(this).hide();
+
+                    } else {
+
+                        if (trnum <= maxRows) { $(this).show(); }
+                    }
+
+                });
+
+
+                //如總列數超過設定顯示列數
+                if (totalRows > maxRows) {
+
+                    //  總頁數 = ( 總列數 除 顯示列數 ) 無條件進位 。
+                    var pagenum = Math.ceil(totalRows / maxRows);
+
+                    //從1開始至總頁數
+                    for (var i = 1; i <= pagenum;) {
+
+                        //在class:pagination內加入<li>頁碼
+                        $('.pagination').append('<li class="page-item" data-page="' + i + '">\
+                                                <span>'+ i++ + '<span class="sr-only">(current)</span></span>\
+                                                </li>').show();
+                    }
+
+                }
+
+                //頁碼的點擊事件
+                $('.page-item').on('click', function (e) {
+
+                    //阻止表單的提交
+                    e.preventDefault();
+                    //取得頁碼
+                    var pageNum = $(this).attr('data-page');
+
+                    //$('.pagination li').removeClass('active');	// remove active class from all li
+                    //$(this).addClass('active');					// add active class to the clicked
+
+                    //資料列數變數初始
+                    var trIndex = 0;
+                    //Table跑每一列資料<tr>
+                    $(table + ' tr:gt(0)').each(function () {
+
+                        trIndex++;
+
+                        //判斷 列數是否超過 最大顯示列數*頁碼   或   小於等於 最大顯示列數*頁碼-最大顯示列數
+                        //ex. (最大顯示列數為10) 點擊第二頁時 若資料列數 > 20 或 <= 10 的資料都被隱藏 ==> 顯示11-20的資料
+                        if (trIndex > (maxRows * pageNum) || trIndex <= ((maxRows * pageNum) - maxRows)) {
+                            $(this).hide();
+                        } else {
+                            $(this).show();
+                        }
+                    });
+                });
+                //頁碼的點擊事件-END
+
+
+            }
+        });
+
+    </script>*@

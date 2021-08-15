@@ -1,0 +1,141 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor hca
+@model YodaCodingForumBack.Models.SearchClass
+@{
+    ViewData["Title"] = "Tag搜尋";
+}
+
+<div class="content-wrapper">
+    <!--<section class="content">
+        <div class="container-fluid">-->
+    <!--主Tag-->
+    <!--相似Tag清單-->
+    <!--新增相似Tag-->
+    <!--<div class="row">
+        <div class="col-12">-->
+    <div class="card card-dark primary">
+        <div class="card-header">
+            <h3 class="card-title">Tag</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body table-responsive p-0">
+            <table class="table table-striped table-bordered">
+
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>TAG名稱</th>
+                        <th>引用次數</th>
+                        <th>追蹤人數</th>
+                        <th>相似Tag數量</th>
+                        <th>建立會員</th>
+                        <th>建立日期</th>
+                        <th>
+                            <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#addNewTag">
+                                <i class=" fas fa-folder"></i>
+                                 新增Tag
+                            </button>
+                            <div class="modal fade" id="addNewTag">
+                                <div class="modal-dialog Tag-Modify">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">新增Tag</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for="NewTag">Tag名稱</label>
+                                                <input type="text" name="newTagName" id="NewTag" class="form-control" required>
+                                            </div>
+                                            <div style="text-align: center;display:none;" id="tagRepeat">
+                                                <span class="error text-danger">Tag名稱重複，請重新輸入</span>
+                                            </div>
+                                            <div style="text-align: center;display:none;" id="tagEmpty">
+                                                <span class="error text-danger">名稱空白，請重新輸入。</span>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer justify-content-between">
+                                            <button type="button" id="addNewTagBtn" class="btn btn-primary">新增</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @*排序*@
+                    @{int i = 0;}
+                    @foreach (var tag in Model.tagList)
+                    {
+                    <tr>
+                        <td>@{i += 1;}@i</td>
+                        <td>@tag.name</td>
+                        <td>@tag.usecount</td>
+                        <td>@tag.followcount</td>
+                        <td>@tag.alsocount</td>
+                        <td>@tag.createuser</td>
+                        <td>@tag.createdate</td>
+                        <td class="project-actions">
+                            <a class="btn btn-info btn-sm " href="/tag/tagalso?tag=@tag.tid">
+                                <i class="fas fa-pencil-alt"></i>
+
+                                修改
+                            </a>
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete_@tag.tid">
+                                <i class="fas fa-trash"></i>刪除
+                            </button>
+                            <div class="modal fade" id="delete_@tag.tid">
+                                <div class="modal-dialog Tag-Modify">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">確定要刪除嗎？</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <span>@tag.name</span>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer justify-content-between">
+                                            <a href="/tag/tagDelete?tag=@tag.tid">
+                                                <button type="button" class="btn btn-danger">確定</button>
+                                            </a>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+    $("#addNewTagBtn").on("click", function () {
+        $.post("/tag/addNewTag", { TagName: $("#NewTag").val() }, function (response) {
+            if (response == "Repeated") {
+                $("#tagRepeat").show("fast");
+            }
+            else if (response == "tagEmpty") {
+                $("#tagEmpty").show("fast");
+            }
+            else {
+                document.location.href = `/tag/tagalso?tag=${response}`;
+            }
+        })
+    })
+
+    $("#NewTag").focus(function () {
+        $("#tagRepeat").hide("slow");
+        $("#tagEmpty").hide("slow");
+    })
+</script>

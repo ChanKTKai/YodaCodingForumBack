@@ -1,0 +1,576 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor hca
+@model YodaCodingForumBack.Models.SearchClass
+@{
+    ViewData["Title"] = "管理首頁";
+
+}
+<link rel="stylesheet" href="~/adminlte/plugins/chart.js/Chart.css">
+<script src="~/adminlte/plugins/chart.js/Chart.js"></script>
+
+<!-- Content Wrapper. 包含頁面內容 -->
+<div class="content-wrapper ">
+    <section class="content">
+        <div class="container-fluid">
+            <!-- 內容標題（頁面標題） -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0 text-dark">首頁</h1>
+                        </div><!-- /.col -->
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="#">主頁</a></li>
+                                <li class="breadcrumb-item active">起始頁</li>
+                            </ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+            <!-- 主體內容 -->
+            <div class="content">
+                <div class="row">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">今日發文人數</span>
+                                <span class="info-box-number">
+                                    @Model.HomeVMs.todayA
+                                </span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="info-box mb-3">
+                            <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">今日發問人數</span>
+                                <span class="info-box-number">@Model.HomeVMs.todayQ</span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <!-- fix for small devices only -->
+                    <div class="clearfix hidden-md-up"></div>
+
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="info-box mb-3">
+                            <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">本日拜訪人數</span>
+                                <span class="info-box-number">62</span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="info-box mb-3">
+                            <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">本週新會員</span>
+                                <span class="info-box-number">8</span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </div>
+
+            <!-- /.content -->
+            <!--圖表-1-->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">累計發文人數</h5>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p class="text-center">
+                                        <strong>Article: 1 AUG, 2021 - 7 AUG, 2021</strong>
+                                    </p>
+
+                                    <div class="chart">
+                                        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                        <!-- Sales Chart Canvas -->
+                                        <canvas id="ArticleChar" height="180" style="height: 180px; display: block; width: 680px;" width="680" class="chartjs-render-monitor"></canvas>
+                                    </div>
+                                    <!-- /.chart-responsive -->
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-md-4">
+                                    <p class="text-center">
+                                        <strong>Goal Completion</strong>
+                                    </p>
+
+                                    <div class="progress-group">
+                                        會員總數/目標會員數
+                                        <span class="float-right"><b>@Model.HomeVMs.todayM</b>/100</span>
+                                        <div class="progress progress-sm">
+                                            <div class="progress-bar bg-primary" style="width:13%"></div>
+                                        </div>
+                                    </div>
+                                    <!-- /.progress-group -->
+
+                                    <div class="progress-group">
+                                        解決總數/問題總數
+                                        <span class="float-right"><b>@Model.HomeVMs.finichQuestionCount</b>/@Model.HomeVMs.questionCount</span>
+                                        <div class="progress progress-sm">
+                                            <div class="progress-bar bg-danger" style="width: 20%"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- /.progress-group -->
+                                    <div class="progress-group">
+                                        累計瀏覽數 / 目標瀏覽數
+                                        <span class="progress-text"></span>
+                                        <span class="float-right"><b>@Model.HomeVMs.articleViewCount</b>/2000</span>
+                                        <div class="progress progress-sm">
+                                            <div class="progress-bar bg-success" style="width: 54%"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- /.progress-group -->
+                                    <div class="progress-group">
+                                        文章總數/目標文章數
+                                        <span class="float-right"><b>@Model.HomeVMs.articleCount</b>/50</span>
+                                        <div class="progress progress-sm">
+                                            <div class="progress-bar bg-warning" style="width: 20%"></div>
+                                        </div>
+                                    </div>
+                                    <!-- /.progress-group -->
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                        <!-- ./card-body -->
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-sm-3 col-6">
+                                    <div class="description-block border-right">
+                                        <span class="description-percentage text-success"><i class="fas fa-caret-up"></i>17%</span>
+                                        <h5 class="description-header">@Model.HomeVMs.todayM</h5>
+                                        <span class="description-text">TOTAL Member</span>
+                                    </div>
+                                    <!-- /.description-block -->
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-sm-3 col-6">
+                                    <div class="description-block border-right">
+                                        <span class="description-percentage text-warning"><i class="fas fa-caret-left"></i>0%</span>
+                                        <h5 class="description-header">@Model.HomeVMs.aAndQCount</h5>
+                                        <span class="description-text">TOTAL Post</span>
+                                    </div>
+                                    <!-- /.description-block -->
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-sm-3 col-6">
+                                    <div class="description-block border-right">
+                                        <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 20%</span>
+                                        <h5 class="description-header">@Model.HomeVMs.articleViewCount</h5>
+                                        <span class="description-text">TOTAL View</span>
+                                    </div>
+                                    <!-- /.description-block -->
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-sm-3 col-6">
+                                    <div class="description-block">
+                                        <span class="description-percentage text-danger"><i class="fas fa-caret-down"></i> 7%</span>
+                                        <h5 class="description-header">@Model.HomeVMs.commendCount</h5>
+                                        <span class="description-text">TOTAL Commend</span>
+                                    </div>
+                                    <!-- /.description-block -->
+                                </div>
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                        <!-- /.card-footer -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!--圖表-2-->
+            <div class="row">
+                <div class="col-md-8">
+                    <!-- LINE CHART -->
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">Line Chart</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-md-12">
+                                <p class="text-center">
+                                    <strong>QA: 1 AUG, 2021 - 7 AUG, 2021</strong>
+                                </p>
+
+                                <div class="chart">
+                                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                    <!-- Sales Chart Canvas -->
+                                    <canvas id="QAChart" height="180" style="height: 180px; display: block; width: 680px;" width="680" class="chartjs-render-monitor"></canvas>
+                                </div>
+                                <!-- /.chart-responsive -->
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+
+
+
+                <!--分布圖-->
+                <div class="col-md-4">
+
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Tag 使用率</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="chart-responsive">
+                                        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                        <canvas id="tagPieChart" height="99" width="199" style="display: block; width: 199px; height: 99px;" class="chartjs-render-monitor"></canvas>
+                                    </div>
+                                    <!-- ./chart-responsive -->
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-md-4">
+                                    <ul class="chart-legend clearfix">
+                                        @{
+                                            string[] classString = { "far fa-circle text-danger", "far fa-circle text-success", "far fa-circle text-warning", "far fa-circle text-info", "far fa-circle text-primary", "far fa-circle text-secondary" };
+                                            for (int y = 0; y < Model.HomeVMs.taguse.Count; y++)
+                                            {
+                                                <li><i class="@classString[y]"></i>@Model.HomeVMs.taguse[y].tagName</li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer p-0">
+                            <ul class="nav nav-pills flex-column">
+                                @for (int t = 0; t <= 2; t++)
+                                {
+                                    <li class="nav-item">
+                                        <a href="/tag/tagDelete?tag=@Model.HomeVMs.taguse[t].tagID" class="nav-link">
+                                            @Model.HomeVMs.taguse[t].tagName
+                                            <span class="float-right text-danger">
+                                                <i class="fas fa-arrow-up text-sm"></i>
+                                                @Model.HomeVMs.peiPrec[t]
+                                            </span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <!-- /.footer -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+
+            <!--最新發文-->
+            <div class="card">
+                <div class="card-header border-transparent">
+                    <h3 class="card-title">最新文章</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table m-0">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>標題</th>
+                                    <th>類型</th>
+                                    <th>發表人</th>
+                                    <th>日期</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{int i = 0;}
+                                @foreach (var a in Model.HomeVMs.articles)
+                                {
+                                    <tr>
+                                        <td>@{i += 1;}@i</td>
+                                        <td><a href="/Article/Index">@a.ArticleTitle</a></td>
+                                        @if (a.ArticleType == "A")
+                                        {
+                                            <td>文章</td>
+                                        }
+                                        else
+                                        {
+                                            <td>問答</td>
+                                        }
+                                        <td>@a.CreateUser</td>
+                                        <td>@a.CreateDate</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+                <!-- /.card-body -->
+                <!-- /.card-footer -->
+            </div>
+
+        </div>
+    </section>
+</div>
+
+
+<script src="~/adminlte/plugins/jquery/jquery.js"></script>
+<script>
+
+    $(document).ready(function () {
+
+
+        //-------------
+        // - Tag圓餅圖 -
+        //-------------
+        // Get context with jQuery - using jQuery's .get() method.
+        var tagpieChartCanvas = $('#tagPieChart').get(0).getContext('2d')
+        var tagpieData = {
+            labels: [
+                '@Model.HomeVMs.taguse[0].tagName',
+                '@Model.HomeVMs.taguse[1].tagName',
+                '@Model.HomeVMs.taguse[2].tagName',
+                '@Model.HomeVMs.taguse[3].tagName',
+                '@Model.HomeVMs.taguse[4].tagName',
+                '@Model.HomeVMs.taguse[5].tagName'
+            ],
+            datasets: [
+                {
+                    data: [@Model.HomeVMs.taguse[0].UseCount,
+                           @Model.HomeVMs.taguse[1].UseCount,
+                           @Model.HomeVMs.taguse[2].UseCount,
+                           @Model.HomeVMs.taguse[3].UseCount,
+                           @Model.HomeVMs.taguse[4].UseCount,
+                           @Model.HomeVMs.taguse[5].UseCount],
+                    backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de']
+                }
+            ]
+        }
+        var tagpieOptions = {
+            legend: {
+                display: false
+            }
+        }
+        // Create pie or douhnut chart
+        // You can switch between pie and douhnut using the method below.
+        // eslint-disable-next-line no-unused-vars
+        var pieChart = new Chart(tagpieChartCanvas, {
+            type: 'doughnut',
+            data: tagpieData,
+            options: tagpieOptions
+        })
+
+  //-----------------
+  // - END Tag圓餅圖 -
+  //-----------------
+
+        //-----------------------
+        // - 文章數波浪圖 -
+        //-----------------------
+
+        // Get context with jQuery - using jQuery's .get() method.
+        var ArticleCharCanvas = $('#ArticleChar').get(0).getContext('2d')
+
+        var ArticleChartData = {
+            labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            datasets: [
+                {
+                    label: 'Article',
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: [2, 5, 3, 3, 3, 4, 3]
+                },
+                {
+                    label: 'QA',
+                    backgroundColor: 'rgba(210, 214, 222, 1)',
+                    borderColor: 'rgba(210, 214, 222, 1)',
+                    pointRadius: false,
+                    pointColor: 'rgba(210, 214, 222, 1)',
+                    pointStrokeColor: '#c1c7d1',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(220,220,220,1)',
+                    data: [3, 2, 4, 3, 1, 6, 4]
+                }
+            ]
+        }
+
+        var ArticleCharOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: false
+            },
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+                }]
+            }
+        }
+
+        // This will get the first returned node in the jQuery collection.
+        // eslint-disable-next-line no-unused-vars
+        var ArticleChar = new Chart(ArticleCharCanvas, {
+            type: 'line',
+            data: ArticleChartData,
+            options: ArticleCharOptions
+        }
+        )
+
+  //---------------------------
+  // - END 文章數波浪圖 -
+  //---------------------------
+
+
+        //-----------------------
+        // - 問題解決波浪圖 -
+        //-----------------------
+
+        // Get context with jQuery - using jQuery's .get() method.
+        var QAChartCanvas = $('#QAChart').get(0).getContext('2d')
+
+        var QAChartData = {
+            labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            datasets: [
+                {
+                    label: 'Article',
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: [3, 2, 4, 3, 1, 6, 4]
+                },
+                {
+                    label: 'QA',
+                    backgroundColor: 'rgba(210, 214, 222, 1)',
+                    borderColor: 'rgba(210, 214, 222, 1)',
+                    pointRadius: false,
+                    pointColor: 'rgba(210, 214, 222, 1)',
+                    pointStrokeColor: '#c1c7d1',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(220,220,220,1)',
+                    data: [1, 0, 2, 3, 2, 3, 4]
+                }
+            ]
+        }
+
+        var QAChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: false
+            },
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+                }]
+            }
+        }
+
+        // This will get the first returned node in the jQuery collection.
+        // eslint-disable-next-line no-unused-vars
+        var QAChart = new Chart(QAChartCanvas, {
+            type: 'line',
+            data: QAChartData,
+            options: QAChartOptions
+        }
+        )
+
+  //---------------------------
+  // - END 問題解決波浪圖 -
+  //---------------------------
+
+
+    });
+
+</script>
+

@@ -1,0 +1,280 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor hca
+@model YodaCodingForumBack.Models.SearchClass
+
+@{
+    ViewData["Title"] = "小測驗管理";
+
+}
+
+<div class="content-wrapper">
+    <section class="content">
+        <div class="container-fluid">
+            <!--主Tag-->
+            <!--相似Tag清單-->
+            <!--新增相似Tag-->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-dark primary mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">小測驗</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+
+
+
+                            <table class="table table-hover text-nowrap">
+
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>題目名稱</th>
+                                        <th>題目類型</th>
+                                        <th>語言</th>
+                                        <th>建立者</th>
+                                        <th>建立時間</th>
+                                        <th>最後異動者</th>
+                                        <th>最後異動時間</th>
+                                        <th>版次</th>
+
+                                        <th>
+                                            <button type="button" class="btn  btn-primary btn-sm float-right" data-toggle="modal" data-target="#Question-Add">
+                                                <i class=" fas fa-folder"></i>
+                                                 新增
+                                            </button>
+
+                                            <div class="modal fade" id="Question-Add">
+                                                <div class="modal-dialog Question-Add">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">新增測驗</h4>
+                                                        </div>
+
+                                                        <form method="post" action="/Question/IndexAdd">
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <label for="inputClientCompany">測驗題目</label>
+                                                                    <input type="text" id="inputClientCompany" class="form-control" name="qname">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>語言</label>
+                                                                    <select class="form-control" name="langid">
+                                                                        @foreach (var lang in Model.langList)
+                                                                        {
+                                                                            <option value="@lang.PlId">@lang.PlName</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>類型</label>
+                                                                    <select class="form-control" name="qtype">
+                                                                        @foreach (var type in Model.questionTypeList)
+                                                                        {
+                                                                            <option value="@type.code">@type.name</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+
+
+                                                                <div class="form-group">
+                                                                    <label>選項</label>
+                                                                    <div class="custom-control custom-checkbox mb-4">
+                                                                        <p>選項1</p>
+                                                                        <input class="form-check-input" type="checkbox" name="op1isanswer">
+                                                                        <textarea class="form-control" rows="3" placeholder="選項1 ..." name="op1name"></textarea>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox mb-4">
+                                                                        <p>選項2</p>
+                                                                        <input class="form-check-input" type="checkbox" name="op2isanswer">
+                                                                        <textarea class="form-control" rows="3" placeholder="選項2.." name="op2name"></textarea>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox mb-4">
+                                                                        <p>選項3</p>
+                                                                        <input class="form-check-input" type="checkbox" name="op3isanswer">
+                                                                        <textarea class="form-control" rows="3" placeholder="選項3 ..." name="op3name"></textarea>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox mb-4">
+                                                                        <p>選項4</p>
+                                                                        <input class="form-check-input" type="checkbox" name="op4isanswer">
+                                                                        <textarea class="form-control" rows="3" placeholder="選項4 ..." name="op4name"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="modal-footer justify-content-between">
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                                                <input type="submit" class="btn btn-primary" value="新增">
+                                                            </div>
+
+                                                        </form>
+
+                                                    </div>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @*排序*@
+                                    @{int i = 0;}
+                                    @foreach (var quest in Model.questLists)
+                                    {
+                                        string btarget = "Question-Modify-" + quest.qid;
+
+                                        <tr>
+                                            <td>@{i += 1;}@i</td>
+                                            <td>@quest.name</td>
+                                            @if (quest.type == "A")
+                                            {
+                                                <td>單選題</td>
+                                            }
+                                            else if (quest.type == "M")
+                                            {
+                                                <td>多選題</td>
+                                            }
+                                            else
+                                            {
+                                                <td>判斷題</td>
+                                            }
+                                            <td>@quest.lang[0].PlName</td>
+                                            <td>@quest.createuser</td>
+                                            <td>@quest.createdate</td>
+                                            <td>@quest.lastupdate_user</td>
+                                            <td>@quest.lastupdate_date</td>
+                                            <td>@quest.version</td>
+                                            <td class="project-actions">
+
+                                                <button type="button" class="btn btn-info btn-sm " data-toggle="modal" data-target="#@btarget">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                    修改
+                                                </button>
+
+                                                <div class="modal fade" id=@btarget>
+                                                    <div class="modal-dialog Question-Add">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title">修改測驗</h4>
+                                                            </div>
+
+                                                            <form method="post" action="/Question/Index">
+                                                                <div class="modal-body">
+                                                                    <div class="form-group">
+                                                                        <label for="inputClientCompany">測驗題目</label>
+                                                                        <input type="hidden" name="qid" value="@quest.qid" />
+                                                                        <input type="text" id="inputClientCompany" class="form-control" name="qname" value="@quest.name">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>語言</label>
+                                                                        <select class="form-control" name="langid">
+                                                                            @foreach (var lang in Model.langList)
+                                                                            {
+                                                                                if (quest.lang[0].PlId == lang.PlId)
+                                                                                {
+                                                                                    <option selected="selected" value="@lang.PlId">@lang.PlName</option>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <option value="@lang.PlId">@lang.PlName</option>
+                                                                                }
+
+                                                                            }
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>類型</label>
+                                                                        <select class="form-control" name="qtype">
+                                                                            @foreach (var type in Model.questionTypeList)
+                                                                            {
+                                                                                if (quest.type == type.code)
+                                                                                {
+                                                                                    <option selected="selected" value="@type.code">@type.name</option>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <option value="@type.code">@type.name</option>
+                                                                                }
+
+                                                                            }
+                                                                        </select>
+                                                                    </div>
+
+
+                                                                    <div class="form-group">
+                                                                        <label>選項</label>
+                                                                        @{int y = 0;}
+                                                                        @foreach (var op in quest.option)
+                                                                        {
+                                                                            y += 1;
+                                                                            string opid = "op" + y.ToString() + "id";
+                                                                            string opname = "op" + y.ToString() + "name";
+                                                                            string opanswer = "op" + y.ToString() + "isanswer";
+
+                                                                            <div class="custom-control custom-checkbox mb-4">
+                                                                                <p>選項 @y</p>
+                                                                                <input type="hidden" value="@op.QoptionId" name="@opid" />
+
+                                                                                @if (op.IscorrectAnswer == "T")
+                                                                                {
+                                                                                    <input class="form-check-input" type="checkbox" checked="checked" name="@opanswer">
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input class="form-check-input" type="checkbox">
+                                                                                }
+
+                                                                                <textarea class="form-control" rows="3" placeholder="" name="@opname">@op.QoptionName</textarea>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer justify-content-between">
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                                                    <button type="submit" class="btn btn-primary">儲存</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                                </div>
+
+                                                <a class="btn btn-danger btn-sm deletebtn" href="/Question/Delete?id=@quest.qid">
+                                                    <i class="fas fa-trash"></i>
+                                                    刪除
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/adminlte/plugins/jquery/jquery.js"></script>
+<script>
+
+        $(document).ready(function () {
+           //刪除確認
+            $(".deletebtn").on("click", function () {
+                if (confirm("是否確認刪除此筆資料？") == true) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            );
+
+        });
+             
+</script>

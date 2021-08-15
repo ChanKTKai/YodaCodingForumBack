@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor hca
+@model YodaCodingForumBack.Models.SearchClass
+@{
+    ViewData["Title"] = "會員搜尋";
+}
+<div class="content-wrapper">
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="card-title">會員清單</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>帳號</th>
+                        <th>姓名</th>
+                        <th>狀態</th>
+                        <th>性別</th>
+                        <th>信箱</th>
+                        <th>累計點數</th>
+                        <th>加入時間</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @*排序*@
+                    @{int i = 0;}
+                    @foreach (var user in Model.userList)
+                    {
+                        <tr>
+                            <td>@{i += 1;}@i</td>
+                            <th>@user.account</th>
+                            <th>@user.name</th>
+
+                            @if (user.status == "關閉")
+                            {
+                                <th class="error text-danger">@user.status</th>
+                            }
+                            else if (user.status == "正常")
+                            {
+                                <th class="error text-green">@user.status</th>
+                            }
+                            else
+                            {
+                                <th class="error text-gray">@user.status</th>
+                            }
+                            <td>@user.sex</td>
+                            <td>@user.email</td>
+                            <td>@user.point</td>
+                            <td>@user.creatdate</td>
+
+                            <td class="text-right py-0 align-middle">
+                                <div class="btn-group btn-group-sm">
+                                    <a href="@Url.Action("UserList","UserInfo",new { uid = user.uid })" class="btn btn-info"><i class="fas fa-eye"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+</div>

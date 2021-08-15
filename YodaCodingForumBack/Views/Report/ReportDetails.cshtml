@@ -1,0 +1,342 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor hca
+@model YodaCodingForumBack.Models.SearchClass
+
+@{
+    ViewData["Title"] = "檢舉表單";
+    var Targettype = ViewBag.Targettype;
+    var TargetarticleID = ViewBag.TargetarticleID;
+    var ReportedID = ViewBag.ReportedID;
+}
+
+
+<div class="content-wrapper ">
+    <section class="content">
+        <form method="post" action="/Report/Review">
+            <div class="container-fluid">
+
+                <div class="row">
+
+                    <section class="content col-12 m-auto">
+
+                        <!-- Default box -->
+                        <!-- 標題-->
+                        <div class="card col-12 mt-3 ">
+                            <div class="card-header">
+                                <h3 class="card-title">檢舉管理</h3>
+                            </div>
+
+                            <!-- 內容-->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 ">
+                                        <div class="row">
+                                            <div class="col-10 m-auto  ">
+                                                <div class="info-box bg-light">
+                                                    <h5 class="card-header text-muted border-bottom-0">
+                                                        <strong>檢舉表單</strong>
+                                                    </h5>
+                                                    <div class="info-box-content">
+                                                        <!--內文-->
+                                                        @foreach (var rp in Model.reportList)
+                                                        {
+                                                            <h4>  &emsp;   </h4>
+                                                            <!--內文-->
+                                                            <!-- /.檢舉人資訊 -->
+                                                            <div class="post">
+                                                                <div class="row invoice-info">
+                                                                    <div class="col-sm-6 invoice-col">
+                                                                        &emsp;
+
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+                                                                                <strong>檢舉編號：</strong>
+                                                                                <br>
+                                                                                <br>
+                                                                                @rp.ReportId
+                                                                            </h5>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /.col -->
+                                                                    <div class="col-sm-6 invoice-col">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+                                                                                <strong>檢舉人帳號：</strong>
+                                                                                <br>
+                                                                                <br>
+                                                                                @rp.UserAccount
+                                                                            </h5>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /.col -->
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- /.檢舉內容 -->
+                                                            <div class="post clearfix" style="min-height:400px">
+                                                                <div class="row invoice-info">
+                                                                    <div class="col-sm-4 invoice-col">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+                                                                                <strong>檢舉目標類型：</strong><br><br>
+                                                                                @if (@rp.ReportTargetType == "A")
+                                                                                {
+                                                                                    <text>文章</text>
+                                                                                }
+                                                                                else if (@rp.ReportTargetType == "C")
+                                                                                {
+                                                                                    <text>留言 </text>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <text>回覆 </text>
+                                                                                }
+                                                                            </h5>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /.col -->
+                                                                    <div class="col-sm-4 invoice-col">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+
+                                                                                <strong>檢舉目標：</strong><br><br>
+                                                                                @if (Targettype == "A")
+                                                                                {
+                                                                                    <a href="/article/articledetails?a=@TargetarticleID" class="link-black text-ml"><i class="fas fa-link mr-1"></i></a>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <a href="/qa/qadetails?q=@TargetarticleID" class="link-black text-ml"><i class="fas fa-link mr-1"></i></a>
+                                                                                }
+                                                                            </h5>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <!-- /.col:被檢舉人 -->
+                                                                    <div class="col-sm-4 invoice-col">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+
+                                                                                <strong>被檢舉人帳號：</strong><br><br>
+                                                                                 @ReportedID
+                                                                            </h5>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <!-- /.col -->
+                                                                    <div class="col-sm-4 invoice-col pt-5">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+
+                                                                                <strong>檢舉原因：</strong><br><br>
+                                                                                @rp.ReasonCode
+                                                                            </h5>
+
+                                                                        </div>
+
+
+
+                                                                    </div>
+
+                                                                    <!-- /.col -->
+                                                                    <div class="col-sm-4 invoice-col pt-5">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+
+                                                                                <strong>其他原因內容：</strong><br><br>
+                                                                                @rp.ReportRemarks
+                                                                            </h5>
+
+                                                                        </div>
+
+
+                                                                    </div>
+                                                                    <!-- /.col -->
+                                                                    <div class="col-sm-4 invoice-col pt-5">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+                                                                                <strong>檢舉內容：</strong><br><br>
+                                                                                @rp.ReportContents
+                                                                            </h5>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- /.日期等 -->
+                                                            <div class="post clearfix">
+                                                                <div class="row invoice-info">
+                                                                    <div class="col-sm-4 invoice-col">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+
+                                                                                <strong>建立時間：</strong><br><br>
+                                                                                @rp.CreateDate
+                                                                            </h5>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /.col -->
+                                                                    <div class="col-sm-4 invoice-col">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+
+                                                                                <strong>最後異動時間：</strong><br><br>
+                                                                                @rp.LastupdateDate
+                                                                            </h5>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /.col -->
+                                                                    <div class="col-sm-4 invoice-col">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+
+                                                                                <strong>版次：</strong><br><br>
+                                                                                @rp.Version
+                                                                            </h5>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /.col -->
+                                                                    <div class="col-sm-4 invoice-col">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+
+                                                                                <strong>建立者：</strong><br><br>
+                                                                                @rp.CreateUser
+                                                                            </h5>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /.col -->
+                                                                    <div class="col-sm-4 invoice-col">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+
+                                                                                <strong>最後異動者：</strong><br><br>
+                                                                                @rp.LastupdateUser
+                                                                            </h5>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /.col -->
+                                                                </div>
+                                                            </div>
+
+
+                                                            <!-- /.審核 -->
+                                                            <div class="">
+                                                                <div class="row invoice-info">
+                                                                    <div class="col-sm-12 invoice-col">
+                                                                        &emsp;
+                                                                        <div>
+                                                                            <h5 class="text-muted  pb-2 text-left ">
+                                                                                <strong>審核狀態：</strong><br><br>
+                                                                            </h5>
+                                                                            <div>
+                                                                                <input type="hidden" name="rttype" value="@rp.ReportTargetType" />
+                                                                                <input type="hidden" name="rttid" value="@rp.ReportTargetId" />
+                                                                                <input type="hidden" name="ReportId" value="@rp.ReportId" />
+                                                                                @if (rp.ReportStatus == "W")
+                                                                                {
+                                                                                    <h5 class="form-check form-check-inline  col-4">
+                                                                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Y">
+                                                                                        <label class="form-check-label" for="inlineRadio1">通過</label>
+                                                                                    </h5>
+                                                                                    <h5 class="form-check form-check-inline col-4">
+                                                                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="N">
+                                                                                        <label class="form-check-label" for="inlineRadio2">未通過</label>
+                                                                                    </h5>
+                                                                                    <h5 class="form-check form-check-inline">
+                                                                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="W" checked="checked">
+                                                                                        <label class="form-check-label" for="inlineRadio3">待審核</label>
+                                                                                    </h5>
+                                                                                }
+                                                                                else if (rp.ReportStatus == "Y")
+                                                                                {
+                                                                                    <h5 class="form-check form-check-inline  col-4">
+                                                                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Y" checked="checked" disabled="disabled">
+                                                                                        <label class="form-check-label text-green" for="inlineRadio1" >通過</label>
+                                                                                    </h5>
+                                                                                    <h5 class="form-check form-check-inline col-4">
+                                                                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="N" disabled="disabled">
+                                                                                        <label class="form-check-label" for="inlineRadio2">未通過</label>
+                                                                                    </h5>
+                                                                                    <h5 class="form-check form-check-inline">
+                                                                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="W" disabled="disabled">
+                                                                                        <label class="form-check-label" for="inlineRadio3">待審核</label>
+                                                                                    </h5>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <h5 class="form-check form-check-inline  col-4">
+                                                                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Y" disabled="disabled">
+                                                                                        <label class="form-check-label" for="inlineRadio1">通過</label>
+                                                                                    </h5>
+                                                                                    <h5 class="form-check form-check-inline col-4">
+                                                                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="N" checked="checked" disabled="disabled">
+                                                                                        <label class="form-check-label text-danger" for="inlineRadio2">未通過</label>
+                                                                                    </h5>
+                                                                                    <h5 class="form-check form-check-inline">
+                                                                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="W" disabled="disabled">
+                                                                                        <label class="form-check-label" for="inlineRadio3">待審核</label>
+                                                                                    </h5>
+                                                                                }
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <br />
+                                                            @if (Model.reportList[0].ReportStatus == "W") {
+                                                            <!-- /.提交/返回上頁等 -->
+                                                            <div class="modal-footer float-right">
+                                                                <button type="submit" class="btn btn-primary" a href="/Report/Review?rid=@rp.ReportId">提交</button>
+                                                            </div>
+                                                            }
+
+                                                        }
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div> &emsp; </div>
+                                    <div class="previous"><a href="@Url.Action("Index","Report")">&larr; 上一頁</a></div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </section>
+
+                </div>
+            </div>
+        </form>
+
+
+    </section>
+</div>
+

@@ -1,0 +1,239 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor hca
+@model YodaCodingForumBack.Models.SearchClass
+
+@{
+    ViewData["Title"] = "小測驗搜尋";
+
+}
+
+<div class="content-wrapper">
+    <section class="content">
+        <div class="container-fluid">
+            <!--主Tag-->
+            <!--相似Tag清單-->
+            <!--新增相似Tag-->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-dark primary">
+                        <div class="card-header">
+                            <h3 class="card-title">小測驗</h3>
+
+
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+
+
+
+                            <table class="table table-hover text-nowrap">
+
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>題目名稱</th>
+                                        <th>題目類型</th>
+                                        <th>語言</th>
+                                        <th>建立者</th>
+                                        <th>建立時間</th>
+                                        <th>最後異動者</th>
+                                        <th>最後異動時間</th>
+                                        <th>版次</th>
+
+                                        <th>
+                                            <button type="button" class="btn  btn-primary btn-sm float-right" data-toggle="modal" data-target="#Question-Add">
+                                                <i class=" fas fa-folder"></i>
+                                                 新增
+                                            </button>
+
+                                            <div class="modal fade" id="Question-Add">
+                                                <div class="modal-dialog Question-Add">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">新增測驗</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="form-group">
+                                                                <label for="inputClientCompany">測驗題目</label>
+                                                                <input type="text" id="inputClientCompany" class="form-control">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>語言</label>
+                                                                <select class="form-control">
+                                                                    @foreach (var lang in Model.langList)
+                                                                    {
+                                                                        <option>@lang.PlName</option>
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>類型</label>
+                                                                <select class="form-control">
+                                                                    @foreach (var type in Model.questionTypeList)
+                                                                    {
+                                                                        <option>@type.name</option>
+                                                                    }
+                                                                </select>
+                                                            </div>
+
+
+                                                            <div class="form-group">
+                                                                <label>選項</label>
+                                                                <div class="custom-control custom-checkbox mb-4">
+                                                                    <p>選項1</p>
+                                                                    <input class="form-check-input" type="checkbox">
+                                                                    <textarea class="form-control" rows="3" placeholder="選項1 ..."></textarea>
+                                                                </div>
+                                                                <div class="custom-control custom-checkbox mb-4">
+                                                                    <p>選項2</p>
+                                                                    <input class="form-check-input" type="checkbox">
+                                                                    <textarea class="form-control" rows="3" placeholder="選項2.."></textarea>
+                                                                </div>
+                                                                <div class="custom-control custom-checkbox mb-4">
+                                                                    <p>選項3</p>
+                                                                    <input class="form-check-input" type="checkbox">
+                                                                    <textarea class="form-control" rows="3" placeholder="選項3 ..."></textarea>
+                                                                </div>
+                                                                <div class="custom-control custom-checkbox mb-4">
+                                                                    <p>選項4</p>
+                                                                    <input class="form-check-input" type="checkbox">
+                                                                    <textarea class="form-control" rows="3" placeholder="選項4 ..."></textarea>
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                        <div class="modal-footer justify-content-between">
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @*排序*@
+                                    @{int i = 0;}
+                                    @foreach (var quest in Model.questLists)
+                                    {
+                                        <tr>
+                                            <td>@{i += 1;}@i</td>
+                                            <td>@quest.name</td>
+                                            <td>@quest.type</td>
+                                            <td>@quest.lang[0].PlName</td>
+                                            <td>@quest.createuser</td>
+                                            <td>@quest.createdate</td>
+                                            <td>@quest.lastupdate_user</td>
+                                            <td>@quest.lastupdate_date</td>
+                                            <td>@quest.version</td>
+                                            <td class="project-actions">
+
+                                                <button type="button" class="btn btn-info btn-sm " data-toggle="modal" data-target="#Question-Modify">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                    修改
+                                                </button>
+                                                <div class="modal fade" id="Question-Modify">
+                                                    <div class="modal-dialog Question-Add">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title">修改測驗</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <label for="inputClientCompany">測驗題目</label>
+                                                                    <input type="text" id="inputClientCompany" class="form-control" value="@quest.name">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>語言</label>
+                                                                    <select class="form-control">
+                                                                        @foreach (var lang in Model.langList)
+                                                                        {
+                                                                            <option>@lang.PlName</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>類型</label>
+                                                                    <select class="form-control">
+                                                                        @foreach (var type in Model.questionTypeList)
+                                                                        {
+                                                                            if (quest.type == type.code)
+                                                                            {
+                                                                                <option selected="selected">@type.name</option>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <option>@type.name</option>
+                                                                            }
+
+                                                                        }
+                                                                    </select>
+                                                                </div>
+
+
+                                                                <div class="form-group">
+                                                                    <label>選項</label>
+                                                                    @{int y = 0;}
+                                                                    @foreach (var op in quest.option)
+                                                                    {
+                                                                        <div class="custom-control custom-checkbox mb-4">
+                                                                            <p>選項@{y += 1;}@y</p>
+                                                                            @if (op.IscorrectAnswer == "T")
+                                                                            {
+                                                                                <input class="form-check-input" type="checkbox" checked="checked">
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input" type="checkbox">
+                                                                            }
+                                                                            <textarea class="form-control" rows="3" placeholder="">@op.QoptionName</textarea>
+                                                                        </div>
+
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer justify-content-between">
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                                            </div>
+                                                        </div>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                                </div>
+
+                                                <a class="btn btn-danger btn-sm" href="#">
+                                                    <i class="fas fa-trash">
+                                                    </i>
+                                                    刪除
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

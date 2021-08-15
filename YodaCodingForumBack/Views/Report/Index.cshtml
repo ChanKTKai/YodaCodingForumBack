@@ -1,0 +1,100 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor hca
+@model YodaCodingForumBack.Models.SearchClass
+@{
+    ViewData["Title"] = "檢舉管理";
+}
+
+<div class="content-wrapper ">
+    <section class="content">
+        <div class="container-fluid">
+            <!--主Tag-->
+            <!--相似Tag清單-->
+            <!--新增相似Tag-->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-dark primary mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">檢舉管理</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>檢舉人帳號</th>
+                                        <th>目標類型</th>
+                                        <th>檢舉原因</th>
+                                        <th>審核狀態</th>
+                                        <th>建立時間</th>
+                                        <th>最後異動時間</th>
+                                        <th>最後異動人</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        @{int i = 0;}
+                                        @foreach (var Report in Model.reportList)
+                                        {
+                                    <tr>
+                                        <td>@{i += 1;}@i</td>
+                                        <td>@Report.UserAccount</td>
+                                        @if (Report.ReportTargetType == "A")
+                                        {
+                                            <td>文章</td>
+                                        }
+                                        else if (Report.ReportTargetType == "C")
+                                        {
+                                            <td>留言 </td>
+                                        }
+                                        else
+                                        {
+                                            <td>回覆 </td>
+                                        }
+
+                                        <td>@Report.ReasonCode</td>
+
+                                        @if (@Report.ReportStatus == "W")
+                                        {
+                                            <td class="error text-danger">待審核</td>
+                                        }
+                                        else if (Report.ReportStatus == "Y")
+                                        {
+                                            <td class="error text-green">通過</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="error text-gray">未通過</td>
+                                        }
+
+                                        <td>@Report.CreateDate</td>
+                                        <td>@Report.LastupdateDate</td>
+                                        <td>@Report.LastupdateUser</td>
+
+                                        <td class="project-actions">
+                                            <a href="/Report/ReportDetails?rid=@Report.ReportId" class="btn btn-info btn-sm ">
+                                                <i class="fas fa-pencil-alt"></i>
+                                                詳情
+                                            </a>
+                                            <a class="btn btn-danger btn-sm" href="#">
+                                                <i class="fas fa-trash">
+                                                </i>
+                                                刪除
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
